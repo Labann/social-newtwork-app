@@ -13,23 +13,92 @@ datasource db {
   provider = "postgresql"
 }
 
-
-
-
 model User {
-  id    Int     @id @default(autoincrement())
+  id    String     @id @default(uuid())
   email String  @unique
-  name  String?
+  first_name  String
+  last_name String
+  username String @unique
+  profilePicture String
+  bannerImg String
+  bio String
+  comments Comment[]
   posts Post[]
+  location String
+  post_likes Post_like[]
+  comment_likes Comment_like[]
+  saved_posts Saved_post[]
+
+  followers Follow[] @relation("follower")
+  following Follow[] @relation("following")
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+model Post{
+  id String @id @default(uuid())
+  author User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String
+  text String?
+  images String[]
+  videos String[]
+  likes Post_like[]
+  comments Comment[]
+  saved_posts Saved_post[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Saved_post{
+  id String @id @default(uuid())
+  post Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  post_id String
+  the_saver User @relation(fields: [user_id], references: [id])
+  user_id String
+  @@unique([post_id, user_id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+model Comment{
+  id String @id @default(uuid())
+  image String?
+  text String?
+  author User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String
+  likes Comment_like[]
+  the_post Post @relation(fields: [post_id], references: [id])
+  post_id String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+model Post_like{
+  id String @id @default(uuid())
+  the_liker User @relation(fields: [user_id], references: [id])
+  user_id String
+  the_post_liked Post @relation(fields: [post_id], references: [id])
+  post_id String
+  @@unique([user_id, post_id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Comment_like{
+  id String @id @default(uuid())
+  the_liker User @relation(fields: [user_id], references: [id])
+  user_id String
+  the_comment Comment @relation(fields: [comment_id], references: [id])
+  comment_id String
+  @@unique([user_id, comment_id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 
+model Follow{
+  id String @id @default(uuid())
+  follower User @relation("follower",fields: [follower_id], references: [id])
+  following User @relation("following",fields: [following_id], references: [id])
+  follower_id String
+  following_id String
+  @@unique([follower_id, following_id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
