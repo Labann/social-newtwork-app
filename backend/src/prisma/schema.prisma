@@ -18,13 +18,14 @@ model User {
   email String  @unique
   first_name  String
   last_name String
+  password String?
   username String @unique
-  profilePicture String
-  bannerImg String
-  bio String
+  profilePicture String?
+  bannerImg String?
+  bio String?
   comments Comment[]
   posts Post[]
-  location String
+  location String?
   post_likes Post_like[]
   comment_likes Comment_like[]
   saved_posts Saved_post[]
