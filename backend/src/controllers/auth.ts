@@ -1,8 +1,8 @@
 import * as express from "express"
 import { prisma } from "../lib/prisma.js"
 import { generateToken } from "../utils/generateToken.js"
-import type { User } from "../src/generated/prisma/browser.js"
 import bcrypt from "bcryptjs"
+
 
 export const login: express.RequestHandler = async (req, res) => {
     const {email, password}: {
@@ -47,7 +47,7 @@ export const login: express.RequestHandler = async (req, res) => {
 
 
 export const sign_up: express.RequestHandler = async (req, res) => {
-    const {username, first_name, last_name, email, password}: User = req.body;
+    const {username, first_name, last_name, email, password} = req.body;
     try {
         if(!username || !first_name || !last_name || !email || !password) {
             return res.status(400).json({

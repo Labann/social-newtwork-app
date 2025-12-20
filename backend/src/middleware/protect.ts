@@ -2,11 +2,11 @@ import jwt from "jsonwebtoken"
 import express from "express"
 import type { My_jwt } from "../lib/jwt.types.js";
 import { prisma } from "../lib/prisma.js";
-import type { User } from "../src/generated/prisma/client.js";
-
 export const protect: express.RequestHandler = async (req, res, next) => {
     try {
         let token: undefined | string;
+
+        
 
         const authHeaders = req.headers.authorization
 
