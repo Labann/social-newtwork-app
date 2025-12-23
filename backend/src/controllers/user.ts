@@ -138,8 +138,8 @@ export const unfollow_user: express.RequestHandler = async (req, res) => {
         const delete_follow = await prisma.follow.delete({
             where: {
                 follower_id_following_id: {
-                    following_id: current_user.id,
-                    follower_id: other_user.id
+                    following_id: other_user.id,
+                    follower_id: current_user.id
                 }
             }
         });
