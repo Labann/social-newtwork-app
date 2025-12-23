@@ -164,6 +164,13 @@ export const delete_account: express.RequestHandler = async (req, res) => {
             error: "user id is required"
         })
         await check_user(user_id)
+
+        const is_my_account = user_id === req.user.id
+
+        if(!is_my_account) return res.status(401).json({
+            error: "unauthorized -- can't delete account of another user"
+        })
+        
         const delete_user = await prisma.user.delete({
             where: {
                 id: user_id
