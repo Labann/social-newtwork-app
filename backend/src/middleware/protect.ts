@@ -23,6 +23,11 @@ export const protect: express.RequestHandler = async (req, res, next) => {
         const user = await prisma.user.findUnique({
             where: {
                 id: decoded.user_id
+            },
+            include: {
+                followers: true,
+                following: true,
+                saved_posts: true
             }
         })
 
