@@ -17,6 +17,7 @@ export const login: express.RequestHandler = async (req, res) => {
             where: {email: email}
         })
 
+        
         if(!user) return res.status(400).json({
             error: "user does not exit"
         })
