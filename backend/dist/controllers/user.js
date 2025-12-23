@@ -147,18 +147,69 @@ export const delete_account = async (req, res) => {
             return res.status(400).json({
                 error: "user id is required"
             });
-        await check_user(user_id);
         const is_my_account = user_id === req.user.id;
         if (!is_my_account)
             return res.status(401).json({
                 error: "unauthorized -- can't delete account of another user"
             });
+        await check_user(user_id);
         const delete_user = await prisma.user.delete({
             where: {
                 id: user_id
             }
         });
         return res.status(200).json({ message: "account deleted successfully", delete_account });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: error.message
+        });
+    }
+};
+export const update_proile = async (req, res) => {
+    const { username, last_name, first_name, email } = req.body;
+    const { user_id } = req.params;
+    try {
+        if (!username && !last_name && !first_name && !email)
+            return res.status(400).json({
+                error: "bad request"
+            });
+        if (!user_id)
+            return res.status(400).json({
+                error: "user id is required"
+            });
+        const user = req.user;
+        check_user(user.id);
+        if (user_id !== req.user.id)
+            return res.status(401).json({
+                error: "can't update profile of other user"
+            });
+        const updated_user = await prisma.user.update({
+            where: {
+                id: user_id
+            },
+            data: {
+                username: username ?? user.username,
+                email: email ?? user.email,
+                first_name: first_name ?? user.first_name,
+                last_name: last_name ?? user.last_name,
+            }
+        });
+        return res.status(200).json({
+            message: "updated profile",
+            updated_user
+        });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: error.message
+        });
+    }
+};
+export const change_profile_pic = async (req, res) => {
+    try {
     }
     catch (error) {
         console.error(error);
