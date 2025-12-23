@@ -45,6 +45,15 @@ export const sign_up = async (req, res) => {
                 error: "bad request"
             });
         }
+        const userExist = await prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        });
+        if (userExist)
+            return res.status(400).json({
+                error: "user already exist"
+            });
         const salt = await bcrypt.genSalt();
         const passwordHashed = await bcrypt.hash(password, salt);
         const newUser = await prisma.user.create({
