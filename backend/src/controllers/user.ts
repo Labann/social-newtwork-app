@@ -87,8 +87,8 @@ export const follow_user: express.RequestHandler = async (req, res) => {
 
         const create_follow = await prisma.follow.create({
             data: {
-                following_id: current_user.id,
-                follower_id: other_user.id
+                following_id: other_user.id,
+                follower_id: current_user.id
             }
         })
 
@@ -125,8 +125,8 @@ export const unfollow_user: express.RequestHandler = async (req, res) => {
         const follow_exist = await prisma.follow.findUnique({
             where: {
                 follower_id_following_id: {
-                    following_id: current_user.id,
-                    follower_id: other_user.id
+                    following_id: other_user.id,
+                    follower_id: current_user.id
                 }
             }
         })
