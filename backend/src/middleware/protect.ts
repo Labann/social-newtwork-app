@@ -6,8 +6,6 @@ export const protect: express.RequestHandler = async (req, res, next) => {
     try {
         let token: undefined | string;
 
-        
-
         const authHeaders = req.headers.authorization
 
         if(authHeaders && authHeaders.includes("Bearer ")){
