@@ -6,7 +6,7 @@ import { check_user } from "../utils/check_user.js";
 export const getMe: express.RequestHandler = async (req, res) => {
     try {
         const user = req.user;
-        check_user(user.id)
+        await check_user(user.id)
         const safeUser = {...user, password: null}
 
         return res.status(200).json(safeUser);
@@ -61,7 +61,7 @@ export const follow_user: express.RequestHandler = async (req, res) => {
 
         const current_user = req.user;
 
-        check_user(current_user.id)
+        await check_user(current_user.id)
         const other_user = await prisma.user.findUnique({
             where: {
                 id: user_id
@@ -111,7 +111,7 @@ export const unfollow_user: express.RequestHandler = async (req, res) => {
 
         const current_user = req.user;
 
-        check_user(current_user.id)
+        await check_user(current_user.id)
         const other_user = await prisma.user.findUnique({
             where: {
                 id: user_id
@@ -163,7 +163,7 @@ export const delete_account: express.RequestHandler = async (req, res) => {
         if(!user_id) return res.status(400).json({
             error: "user id is required"
         })
-        check_user(user_id)
+        await check_user(user_id)
         const delete_user = await prisma.user.delete({
             where: {
                 id: user_id
