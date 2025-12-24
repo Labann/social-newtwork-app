@@ -1,6 +1,7 @@
 import * as express from "express";
 import { prisma } from "../lib/prisma.js";
 import { check_user } from "../utils/check_user.js";
+import bcrypt from "bcryptjs";
 export const getMe = async (req, res) => {
     try {
         const user = req.user;
@@ -210,6 +211,49 @@ export const update_proile = async (req, res) => {
 };
 export const change_profile_pic = async (req, res) => {
     try {
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: error.message
+        });
+    }
+};
+export const change_password = async (req, res) => {
+    const { prev_password, new_password } = req.body;
+    const { user_id } = req.params;
+    try {
+        if (!prev_password || !new_password)
+            return res.status(400).json({
+                error: "bad request -  previous password and new password are required"
+            });
+        if (!user_id)
+            return res.status(400).json({
+                error: "user id is required"
+            });
+        const current_user = req.user;
+        check_user(current_user.id);
+        if (user_id !== current_user.id)
+            return res.status(401).json({
+                error: "cannot change password of another user"
+            });
+        const isMatch = await bcrypt.compare(prev_password, current_user.password);
+        if (!isMatch)
+            return res.status(400).json({
+                error: "incorrect previous password"
+            });
+        const salt = await bcrypt.genSalt();
+        const passwordHashed = await bcrypt.hash(new_password, salt);
+        const new_user = await prisma.user.update({
+            where: {
+                id: user_id,
+            },
+            data: {
+                password: passwordHashed
+            }
+        });
+        const safe_user = { ...new_user, password: null };
+        return res.status(200).json({ safe_user, message: "password changed" });
     }
     catch (error) {
         console.error(error);
