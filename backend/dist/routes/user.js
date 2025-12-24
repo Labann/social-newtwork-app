@@ -10,7 +10,7 @@ router.post("/unfollow/:user_id", protect, unfollow_user);
 router.delete("/delete/:user_id", protect, delete_account);
 router.patch("/profile/update/:user_id", protect, update_proile);
 router.patch("/change_password/:user_id", protect, change_password);
-router.patch("/change_profilePic", protect, upload.single("profilePic"), change_profile_pic);
-router.patch("/change_banner_img", protect, upload.single("bannerImg"), change_banner_img);
+router.patch("/change_profilePic/:user_id", protect, upload.single("profilePic"), change_profile_pic);
+router.patch("/change_banner_img/:user_id", protect, upload.single("bannerImg"), change_banner_img);
 export default router;
 //# sourceMappingURL=user.js.map
