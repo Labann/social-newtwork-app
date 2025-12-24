@@ -263,6 +263,7 @@ export const change_password: express.RequestHandler = async (req, res) => {
         })
 
         const current_user = req.user
+        
         check_user(current_user.id);
 
         if(user_id !== current_user.id) return res.status(401).json({
