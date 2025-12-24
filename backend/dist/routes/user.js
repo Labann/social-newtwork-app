@@ -7,6 +7,6 @@ router.get("/profile/:id", protect, getUserProfile);
 router.post("/follow/:user_id", protect, follow_user);
 router.post("/unfollow/:user_id", protect, unfollow_user);
 router.delete("/delete/:user_id", protect, delete_account);
-router.patch("/profile/update", protect, update_proile);
+router.patch("/profile/update/:user_id", protect, update_proile);
 export default router;
 //# sourceMappingURL=user.js.map
