@@ -2,6 +2,8 @@ import * as express from "express"
 import { prisma } from "../lib/prisma.js";
 import { check_user } from "../utils/check_user.js";
 import bcrypt from "bcryptjs";
+import { uploadToCloudinary } from "../utils/cloudinary.js";
+import type { User } from "../generated/prisma/client.js";
 
 
 export const getMe: express.RequestHandler = async (req, res) => {
@@ -239,9 +241,45 @@ export const update_proile: express.RequestHandler = async (req, res) => {
 }
 
 export const change_profile_pic: express.RequestHandler = async (req, res) => {
-    
+    const {user_id} = req.params;  
     try {
+        if(!user_id) return res.status(400).json({
+            error: "user id is required"
+        })
+        const current_user = req.user  as User;
+
+        await check_user(current_user.id);
+
+        if(current_user.id !== user_id){
+            return res.status(400).json({
+                error: "can't change profile another account"
+            })
+        }
+
+        if(!req.file) return res.status(400).json({
+            error: "file is required"
+        })
+
+        const file_buffer = req.file.buffer;
+
+        const results = await uploadToCloudinary(file_buffer);
         
+        const secure_url = results.secure_url
+
+        const updated_user = await prisma.user.update({
+            where: {
+                id: user_id
+            },
+            data: {
+                profilePicture: secure_url ?? current_user.profilePicture
+            }
+        })
+
+        const safe_user = {...updated_user, password: null}
+        return res.status(200).json({
+            message: "updated profile picture",
+            user: safe_user
+        })
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -250,6 +288,54 @@ export const change_profile_pic: express.RequestHandler = async (req, res) => {
     }
 }
 
+
+export const change_banner_img: express.RequestHandler = async (req, res) => {
+    const {user_id} = req.params;
+    try {
+        if(!user_id) return res.status(400).json({
+            error: "user id is required"
+        })
+
+        const current_user = req.user as User;
+
+        await check_user(current_user.id);
+
+        if(current_user.id !== user_id) return res.status(400).json({
+            error: "can not change cover pic of another user"
+        })
+
+        if(!req.file) return res.status(400).json({
+            error: "file is required"
+        })
+
+        const file_buffer = req.file.buffer
+        
+        const results = await uploadToCloudinary(file_buffer);
+
+        const secure_url = results.secure_url;
+
+        const updated_user = await prisma.user.update({
+            where: {
+                id: user_id
+            },
+            data: {
+                bannerImg: secure_url ?? current_user.bannerImg
+            }
+        })
+
+        const safer_user = {...current_user, password: null}
+
+        return res.status(200).json({
+            message: "updated banner image",
+            user: safer_user
+        })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: (error as Error).message
+        })
+    }
+}
 export const change_password: express.RequestHandler = async (req, res) => {
     const {prev_password, new_password} = req.body;
     const {user_id} = req.params;
@@ -264,7 +350,7 @@ export const change_password: express.RequestHandler = async (req, res) => {
 
         const current_user = req.user
         
-        check_user(current_user.id);
+        await check_user(current_user.id);
 
         if(user_id !== current_user.id) return res.status(401).json({
             error: "cannot change password of another user"
@@ -290,7 +376,7 @@ export const change_password: express.RequestHandler = async (req, res) => {
 
         const safe_user = {...new_user, password: null}
 
-        return res.status(200).json({safe_user, message: "password changed"});
+        return res.status(200).json({user:safe_user, message: "password changed"});
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -298,3 +384,6 @@ export const change_password: express.RequestHandler = async (req, res) => {
         })
     }
 }
+
+
+
