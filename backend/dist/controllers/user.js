@@ -280,7 +280,7 @@ export const change_banner_img = async (req, res) => {
                 bannerImg: secure_url ?? current_user.bannerImg
             }
         });
-        const safer_user = { ...current_user, password: null };
+        const safer_user = { ...updated_user, password: null };
         return res.status(200).json({
             message: "updated banner image",
             user: safer_user

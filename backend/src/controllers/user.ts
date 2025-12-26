@@ -323,7 +323,7 @@ export const change_banner_img: express.RequestHandler = async (req, res) => {
             }
         })
 
-        const safer_user = {...current_user, password: null}
+        const safer_user = {...updated_user, password: null}
 
         return res.status(200).json({
             message: "updated banner image",
