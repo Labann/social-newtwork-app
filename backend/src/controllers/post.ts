@@ -64,3 +64,149 @@ export const create_post: express.RequestHandler = async (req, res) => {
         })
     }
 }
+
+export const like_post: express.RequestHandler = async (req, res) => {
+    const {post_id} = req.params;
+    try {
+
+        if(!post_id) return res.status(400).json({
+            error: "post id is required"
+        })
+
+        const post = await prisma.post.findUnique({
+            where: {
+                id: post_id
+            }
+        })
+
+        if(!post) return res.status(404).json({
+            error: "post not found"
+        }) 
+
+        const user = await  req.user as User;
+        await check_user(user.id);
+
+        const likeExists = await prisma.post_like.findUnique({
+            where: {
+                user_id_post_id: {
+                    user_id: user.id,
+                    post_id: post.id 
+                }
+            }
+        })
+
+        if(!likeExists) return res.status(400).json({
+            error: "already liked post"
+        })
+
+        const post_like = await prisma.post_like.create({
+            data: {
+                post_id: post.id,
+                user_id: user.id
+            }
+        })
+
+        return res.status(201).json({
+            message: "liked post",
+            post_like
+        })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: (error as Error).message
+        })
+    }
+}
+
+
+export const unlike_post: express.RequestHandler = async (req, res) => {
+    const {post_id} = req.params;
+    try {
+        if(!post_id) return res.status(400).json({
+            error: "post id is required"
+        })
+
+        const postExists = await prisma.post.findUnique({
+            where: {
+                id: post_id
+            }
+        })
+
+        if(!postExists) return res.status(404).json({
+            error: "post does not exist"
+        })
+
+        const user = req.user as User;
+
+
+        await check_user(user.id);
+        
+        const post_like_exists = await prisma.post_like.findUnique({
+            where: {
+                user_id_post_id: {
+                    user_id: user.id,
+                    post_id: postExists.id
+                }
+            }
+        })
+
+        if(!post_like_exists) return res.status(400).json({
+            error: "can't unlike a post you have not liked"
+        })
+
+        const remove_like = await prisma.post_like.delete({
+            where: {
+                user_id_post_id: {
+                    user_id: user.id,
+                    post_id: postExists.id
+                }
+            }
+        })
+
+        return res.status(200).json({
+            message: "post unliked",
+            post_like: remove_like
+        })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: (error as Error).message
+        })
+    }
+}
+
+
+export const delete_post: express.RequestHandler = async (req, res) => {
+    const {post_id} = req.params;
+    try {
+        if(!post_id) return res.status(400).json({
+            error: "post id not found"
+        })
+
+        const post = await prisma.post.findUnique({
+            where: {
+                id: post_id
+            }
+        })
+        
+        if(!post) return res.status(404).json({
+            error: "post not found"
+        })
+
+        const deleted_post = await prisma.post.delete({
+            where: {
+                id: post_id
+            }
+        })
+
+        return res.status(200).json({
+            message: "post deleted successfully",
+            post: deleted_post
+        })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: (error as Error).message
+        })
+    }
+}
