@@ -1,6 +1,6 @@
 import * as express from "express"
 import { protect } from "../middleware/protect.js";
-import { comment_on_post, create_post, delete_comment, delete_post, like_post, reply_on_comment, unlike_post } from "../controllers/post.js";
+import { comment_on_post, create_post, delete_comment, delete_post, get_post, get_posts, like_post, reply_on_comment, unlike_post } from "../controllers/post.js";
 import { upload } from "../utils/upload.js";
 
 
@@ -16,6 +16,8 @@ router.post(
     ]),
     create_post
 );
+router.get("/:post_id", get_post)
+router.get("/", get_posts)
 router.post("/like_post/:post_id", protect, like_post)
 router.delete('/un_like_post/:post_id', protect, unlike_post)
 router.delete("/delete/:post_id", protect, delete_post);

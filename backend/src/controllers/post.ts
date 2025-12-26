@@ -215,6 +215,45 @@ export const comment_on_post: express.RequestHandler = async (req , res) => {
     }
 }
 
+export const get_post: express.RequestHandler = async (req, res) => {
+    const {post_id} = req.params;
+    try {
+        if(!post_id) return res.status(400).json({
+            error: "post id is required"
+        })
+        
+        const post = await prisma.post.findUnique({
+            where: {
+                id: post_id
+            }
+        })
+
+        if(!post) return res.status(404).json({
+            error: "post not found"
+        })
+
+        return res.status(200).json(post);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: (error as Error).message
+        })
+    }
+}
+
+
+export const get_posts: express.RequestHandler = async (req, res) => {
+    try {
+        const posts = await prisma.post.findMany({});
+
+        return res.status(200).json(posts);
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            error: (error as Error).message
+        })
+    }
+}
 export const reply_on_comment: express.RequestHandler = async (req, res) => {
     const {post_id, parent_id} = req.params
     const {text} = req.body;
