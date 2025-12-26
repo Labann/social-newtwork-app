@@ -178,11 +178,22 @@ export const unlike_post: express.RequestHandler = async (req, res) => {
 
 export const comment_on_post: express.RequestHandler = async (req , res) => {
     const {post_id} = req.params;
+    const {text} = req.body;
+    const image = req.file
     try {
         if(!post_id) return res.status(400).json({
             error: "post id required"
         })
 
+        if(!text && !image) return res.status(400).json({
+            error: "text or image is required"
+        })
+        
+        let secure_url
+        if(image) {
+            const results = await uploadToCloudinary(image.buffer);
+            secure_url = results.secure_url
+        }
         const post = await prisma.post.findUnique({
             where: {
                 id: post_id
@@ -200,7 +211,9 @@ export const comment_on_post: express.RequestHandler = async (req , res) => {
         const create_comment = await prisma.comment.create({
             data: {
                 user_id: user.id,
-                post_id: post_id
+                post_id: post_id,
+                text: text ?? null,
+                image: secure_url ?? null
             }
         })
 
@@ -277,9 +290,13 @@ export const reply_on_comment: express.RequestHandler = async (req, res) => {
             }
         })
 
+
         if(!post) return res.status(404).json({
             error: "post not found"
         })
+
+    
+        
 
         const commentExist = await prisma.comment.findUnique({
             where: {
@@ -296,6 +313,7 @@ export const reply_on_comment: express.RequestHandler = async (req, res) => {
             const results = await uploadToCloudinary(image.buffer);
             secure_url = results.secure_url;
         }
+        
         const reply = await prisma.comment.create({
             data: {
                 post_id: post_id,

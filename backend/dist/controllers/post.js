@@ -149,11 +149,22 @@ export const unlike_post = async (req, res) => {
 };
 export const comment_on_post = async (req, res) => {
     const { post_id } = req.params;
+    const { text } = req.body;
+    const image = req.file;
     try {
         if (!post_id)
             return res.status(400).json({
                 error: "post id required"
             });
+        if (!text && !image)
+            return res.status(400).json({
+                error: "text or image is required"
+            });
+        let secure_url;
+        if (image) {
+            const results = await uploadToCloudinary(image.buffer);
+            secure_url = results.secure_url;
+        }
         const post = await prisma.post.findUnique({
             where: {
                 id: post_id
@@ -168,7 +179,9 @@ export const comment_on_post = async (req, res) => {
         const create_comment = await prisma.comment.create({
             data: {
                 user_id: user.id,
-                post_id: post_id
+                post_id: post_id,
+                text: text ?? null,
+                image: secure_url ?? null
             }
         });
         return res.status(200).json({
