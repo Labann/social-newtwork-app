@@ -96,7 +96,7 @@ export const like_post: express.RequestHandler = async (req, res) => {
             }
         })
 
-        if(!likeExists) return res.status(400).json({
+        if(likeExists) return res.status(400).json({
             error: "already liked post"
         })
 

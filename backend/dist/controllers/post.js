@@ -75,7 +75,7 @@ export const like_post = async (req, res) => {
                 }
             }
         });
-        if (!likeExists)
+        if (likeExists)
             return res.status(400).json({
                 error: "already liked post"
             });
