@@ -7,7 +7,7 @@ export const create_post = async (req, res) => {
     try {
         const files = req.files;
         const { images: ImageFiles = [], videos: VideoFiles = [] } = files;
-        if (text && (!ImageFiles || ImageFiles.length === 0) && (!VideoFiles || VideoFiles.length === 0))
+        if (text && ImageFiles.length === 0 && VideoFiles.length === 0)
             return res.status(400).json({
                 error: "text or images or videos are required in the post"
             });
@@ -23,7 +23,7 @@ export const create_post = async (req, res) => {
             }));
         }
         if (VideoFiles.length !== 0) {
-            videos_secure_url = await Promise.all(ImageFiles.map(async (file) => {
+            videos_secure_url = await Promise.all(VideoFiles.map(async (file) => {
                 const results = await uploadToCloudinary(file.buffer);
                 const secure_url = results.secure_url;
                 return secure_url;
