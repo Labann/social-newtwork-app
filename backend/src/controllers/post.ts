@@ -17,7 +17,7 @@ export const create_post: express.RequestHandler = async (req, res) => {
         
         const {images: ImageFiles = [], videos: VideoFiles = []} = files
         
-        if(text &&  ImageFiles.length === 0 &&  VideoFiles.length === 0) return res.status(400).json({
+        if(!text &&  ImageFiles.length === 0 &&  VideoFiles.length === 0) return res.status(400).json({
             error: "text or images or videos are required in the post"
         })
 
