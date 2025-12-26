@@ -839,6 +839,7 @@ export declare const Saved_postScalarFieldEnum: {
 export type Saved_postScalarFieldEnum = (typeof Saved_postScalarFieldEnum)[keyof typeof Saved_postScalarFieldEnum];
 export declare const CommentScalarFieldEnum: {
     readonly id: "id";
+    readonly parent_id: "parent_id";
     readonly image: "image";
     readonly text: "text";
     readonly user_id: "user_id";

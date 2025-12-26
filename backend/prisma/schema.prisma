@@ -62,10 +62,13 @@ model Saved_post{
 }
 model Comment{
   id String @id @default(uuid())
+  parent Comment? @relation("reply_to_comment", fields: [parent_id], references: [id], onDelete: Cascade)
+  parent_id String?
   image String?
   text String?
   author User @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id String
+  replies Comment[] @relation("reply_to_comment")
   likes Comment_like[]
   the_post Post @relation(fields: [post_id], references: [id])
   post_id String

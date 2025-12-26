@@ -147,6 +147,134 @@ export const unlike_post = async (req, res) => {
         });
     }
 };
+export const comment_on_post = async (req, res) => {
+    const { post_id } = req.params;
+    try {
+        if (!post_id)
+            return res.status(400).json({
+                error: "post id required"
+            });
+        const post = await prisma.post.findUnique({
+            where: {
+                id: post_id
+            }
+        });
+        if (!post)
+            return res.status(404).json({
+                error: "post not found"
+            });
+        const user = req.user;
+        await check_user(user.id);
+        const create_comment = await prisma.comment.create({
+            data: {
+                user_id: user.id,
+                post_id: post_id
+            }
+        });
+        return res.status(200).json({
+            message: "comment on post",
+            comment: create_comment
+        });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: error.message
+        });
+    }
+};
+export const reply_on_comment = async (req, res) => {
+    const { post_id, parent_id } = req.params;
+    const { text } = req.body;
+    try {
+        if (!post_id || !parent_id)
+            return res.status(400).json({
+                error: "post id and parant id are required"
+            });
+        const image = req.file;
+        if (!text && !image)
+            return res.status(400).json({
+                error: "text or image is required"
+            });
+        const user = req.user;
+        await check_user(user.id);
+        const post = await prisma.post.findUnique({
+            where: {
+                id: post_id
+            }
+        });
+        if (!post)
+            return res.status(404).json({
+                error: "post not found"
+            });
+        const commentExist = await prisma.comment.findUnique({
+            where: {
+                id: parent_id,
+            }
+        });
+        if (!commentExist)
+            return res.status(404).json({
+                error: "parent comment does not exist"
+            });
+        let secure_url;
+        if (image) {
+            const results = await uploadToCloudinary(image.buffer);
+            secure_url = results.secure_url;
+        }
+        const reply = await prisma.comment.create({
+            data: {
+                post_id: post_id,
+                parent_id: parent_id,
+                text: text ?? null,
+                image: secure_url ?? null,
+                user_id: user.id
+            }
+        });
+        return res.status(200).json({
+            message: "replied on comment",
+            reply
+        });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: error.message
+        });
+    }
+};
+export const delete_comment = async (req, res) => {
+    const { comment_id } = req.params;
+    try {
+        if (!comment_id)
+            return res.status(400).json({
+                error: "comment id is required"
+            });
+        const comment = await prisma.comment.findUnique({
+            where: {
+                id: comment_id
+            }
+        });
+        if (!comment)
+            return res.status(404).json({
+                error: "comment not found"
+            });
+        const deleted_comment = await prisma.comment.delete({
+            where: {
+                id: comment_id
+            }
+        });
+        return res.status(200).json({
+            message: "deleted comment successfully",
+            comment: deleted_comment
+        });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: error.message
+        });
+    }
+};
 export const delete_post = async (req, res) => {
     const { post_id } = req.params;
     try {

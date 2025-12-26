@@ -86,6 +86,7 @@ export const Saved_postScalarFieldEnum = {
 };
 export const CommentScalarFieldEnum = {
     id: 'id',
+    parent_id: 'parent_id',
     image: 'image',
     text: 'text',
     user_id: 'user_id',
