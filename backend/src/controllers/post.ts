@@ -261,7 +261,11 @@ export const get_post: express.RequestHandler = async (req, res) => {
             include: {
                 author: true,
                 likes: true,
-                comments: true,
+                comments: {
+                    include: {
+                        author: true
+                    }
+                },
             }
         })
 
@@ -286,7 +290,11 @@ export const get_posts: express.RequestHandler = async (req, res) => {
         const posts = await prisma.post.findMany({
             include: {
                 likes: true,
-                comments: true,
+                comments: {
+                    include: {
+                        author: true
+                    }
+                },
                 author: true,
             }
         });

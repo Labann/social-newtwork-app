@@ -230,7 +230,11 @@ export const get_post = async (req, res) => {
             include: {
                 author: true,
                 likes: true,
-                comments: true,
+                comments: {
+                    include: {
+                        author: true
+                    }
+                },
             }
         });
         if (!post)
@@ -252,7 +256,11 @@ export const get_posts = async (req, res) => {
         const posts = await prisma.post.findMany({
             include: {
                 likes: true,
-                comments: true,
+                comments: {
+                    include: {
+                        author: true
+                    }
+                },
                 author: true,
             }
         });
