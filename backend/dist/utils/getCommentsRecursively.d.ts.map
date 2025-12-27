@@ -1,0 +1,1 @@
+{"version":3,"file":"getCommentsRecursively.d.ts","sourceRoot":"","sources":["../../src/utils/getCommentsRecursively.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,OAAO,EAAE,MAAM,+BAA+B,CAAA;AAG5D,MAAM,MAAM,kBAAkB,GAAG,OAAO,GAAG;IACzC,OAAO,EAAE,kBAAkB,EAAE,CAAC;CAC/B,CAAC;AAEF,eAAO,MAAM,gBAAgB,GAC3B,UAAU,OAAO,EAAE,EACnB,eAAc,MAAM,GAAG,IAAW,KACjC,kBAAkB,EAuBpB,CAAC"}

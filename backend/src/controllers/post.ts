@@ -4,8 +4,7 @@ import type { User } from "../generated/prisma/client.js";
 import { check_user } from "../utils/check_user.js";
 import { uploadToCloudinary } from "../utils/cloudinary.js";
 import { prisma } from "../lib/prisma.js";
-
-
+import { buildCommentTree } from "../utils/getCommentsRecursively.js";
 
 
 export const create_post: express.RequestHandler = async (req, res) => {
@@ -48,6 +47,11 @@ export const create_post: express.RequestHandler = async (req, res) => {
                 text: text ?? null,
                 images: images_secure_url || [],
                 videos: videos_secure_url || []
+            },
+            include: {
+                author: true,
+                comments: true,
+                likes: true,
             }
         })
         
@@ -104,6 +108,10 @@ export const like_post: express.RequestHandler = async (req, res) => {
             data: {
                 post_id: post.id,
                 user_id: user.id
+            },
+            include: {
+                the_liker: true,
+                the_post_liked: true,
             }
         })
 
@@ -161,6 +169,10 @@ export const unlike_post: express.RequestHandler = async (req, res) => {
                     user_id: user.id,
                     post_id: postExists.id
                 }
+            },
+            include: {
+                the_liker: true,
+                the_post_liked: true
             }
         })
 
@@ -214,11 +226,17 @@ export const comment_on_post: express.RequestHandler = async (req , res) => {
                 post_id: post_id,
                 text: text ?? null,
                 image: secure_url ?? null
+            },
+            include: {
+                the_post: true,
+                author: true,
+                likes: true,
+                replies: true
             }
         })
 
-        return res.status(200).json({
-            message: "comment on post",
+        return res.status(201).json({
+            message: "commented on post",
             comment: create_comment
         })
     } catch (error) {
@@ -239,6 +257,11 @@ export const get_post: express.RequestHandler = async (req, res) => {
         const post = await prisma.post.findUnique({
             where: {
                 id: post_id
+            }, 
+            include: {
+                author: true,
+                likes: true,
+                comments: true,
             }
         })
 
@@ -246,7 +269,9 @@ export const get_post: express.RequestHandler = async (req, res) => {
             error: "post not found"
         })
 
-        return res.status(200).json(post);
+        const comments = buildCommentTree(post.comments);
+
+        return res.status(200).json({...post, comments});
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -258,9 +283,20 @@ export const get_post: express.RequestHandler = async (req, res) => {
 
 export const get_posts: express.RequestHandler = async (req, res) => {
     try {
-        const posts = await prisma.post.findMany({});
+        const posts = await prisma.post.findMany({
+            include: {
+                likes: true,
+                comments: true,
+                author: true,
+            }
+        });
 
-        return res.status(200).json(posts);
+        const posts_with_comments = posts.map(post => ({
+            ...post,
+            comments: buildCommentTree(post.comments)
+        }))
+
+        return res.status(200).json({posts: posts_with_comments});
     } catch (error) {
         console.error(error)
         return res.status(500).json({
@@ -321,6 +357,11 @@ export const reply_on_comment: express.RequestHandler = async (req, res) => {
                 text: text ?? null,
                 image: secure_url ?? null,
                 user_id: user.id
+            },
+            include: {
+                author: true,
+                likes: true,
+                replies: true,
             }
         })
 
