@@ -4,51 +4,88 @@ import { FaGoogle } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import Link from 'next/link';
+import {useFormik} from "formik"
+import * as yup from "yup"
 const LoginPage = () => {
-  const [isOpen, setIsOpen] = useState()
-    return (
+  const [isOpen, setIsOpen] = useState(false)
+    const validationSchema = yup.object({
+        email: yup.string().required().email(),
+        password: yup.string().required().min(3).max(20)
+    })
+    const formik = useFormik({
+        initialValues: {email: "", password: ""},
+        validationSchema: validationSchema,
+        onSubmit: () => console.log("submitted")
+    })
+  return (
 
     <div className='p-4'>
-        <div className="mx-auto max-w-lg border p-2 flex flex-col space-y-2">
+        <div className="mx-auto max-w-lg p-2 flex flex-col space-y-2">
             <div className="w-full text-center">
-                <h1 className='text-default font-semi-bold'>Welcome back!</h1>
-                <h3 className='text-sm'>Log to your account to get  started</h3>
+                <h1 className='text-default font-bold text-2xl'>Welcome back!</h1>
+                <h3 className='text-xs'>Log to your account to get  started</h3>
             </div>
-            <button className='flex border border-primary/35 items-center space-x-2 w-full justify-center p-2'>
-                <span><FaGoogle/></span>
+            <button className='flex cursor-pointer border-2 border-black/30 rounded-md items-center space-x-2 w-full justify-center p-2'>
+                <span><FaGoogle size={"1.5em"}/></span>
                 <span>Continue with Google</span>
             </button>
 
-            <div className="flex items-center w-full">
-                <div className="w-full border border-primary/30"></div>
+            <div className="flex items-center space-x-2 w-full">
+                <div className="w-full border border-black/30 rounded-md"/>
                 <span>Or</span>
-                <div className="w-full border border-primary/30"></div>
+                <div className="w-full border border-black/30 rounded-md"/>
             </div>
             <br />
-            <form action="" className='flex flex-col w-full space-y-3'>
-                <input type="text" className='border-primary/35 rounded-md p-2'
+            <form onSubmit={formik.handleSubmit} className='flex flex-col w-full space-y-3'>
+                <input 
+                    type="text" 
+                    name='email' 
+                    value={formik.values.email} 
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className='border-black/30 border-2 rounded-md p-2'
                     placeholder='Enter your email'
                 />
+                {
+                    formik.touched.email && formik.errors.email && (
+                        <span className='text-red-400 text-xs'>{formik.errors.email}</span>
+                    )
+                }
                 <div className="relative">
                     <input 
-                        type="text" 
-                        className='border-primary/35 rounded-md p-2'
+                        type={isOpen?  "text" :"password" }
+                        name='password'
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        className='border-black/30 w-full border-2 rounded-md p-2'
                         placeholder='Enter your password'
                     />
-                    {isOpen && <FaEyeSlash/>}
+                    {
+                        !isOpen? (
+                        <FaEyeSlash onClick={() => setIsOpen(!isOpen)} className='absolute right-2 top-3'/>
+                    ): (
+                        <FaEye onClick={() => setIsOpen(!isOpen)} className='absolute right-2 top-3'/>
+                    )
+                    }
+                    {
+                        formik.touched.password && formik.touched.password && (
+                            <span className='text-red-400 text-xs'>{formik.errors.password}</span>
+                        )
+                    }
                 </div>
                 <div className="flex items-center justify-between">
-                    <input type='textbox'/>
-                    <p className='font-bold'>Forgot password?</p>
+                    <input type='checkbox' className='border'/>
+                    <p className='font-bold text-xs'>Forgot password?</p>
                 </div>
                 <br />
-                <button className='bg-default p-2 rounded-md text-secondary text-center w-full'></button>
+                <button type='submit' className='bg-default p-2 cursor-pointer hover:bg-black/70 rounded-md text-center w-full bg-black/90 text-white'>Sign in</button>
                 <br />
-                <div className="">
-                    <p>{"Don't have an account? "}</p>
-                    <Link href={"/sign-up"} className='font-semibold'>Create now</Link>
-                </div>
             </form>
+            <div className="flex items-center justify-center space-x-1">
+                <p>{"Don't have an account? "}</p>
+                <Link href={"/sign-up"} className='font-semibold text-xs'>Create now</Link>
+            </div>
         </div>
     </div>
   )
