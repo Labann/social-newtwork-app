@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button"
+import LoginPage from "./(auth)/login/page"
  
 export default function Home() {
-  return (
-    <div>
-      <Button className="bg-primary">Click me</Button>
-    </div>
-  )
+  return <div className="shady-background min-h-screen flex flex-col justify-center ">
+    <LoginPage/>
+  </div>
 }

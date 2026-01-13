@@ -133,7 +133,7 @@ const SignUpPage = () => {
 
                 <div className="relative">
                     <input 
-                        type={isOpen?  "text" :"password" }
+                        type={isConfirmOpen?  "text" :"password" }
                         name='confirm_password'
                         value={formik.values.confirm_password}
                         onChange={formik.handleChange}
@@ -160,7 +160,7 @@ const SignUpPage = () => {
                     <p className='font-bold text-xs'>Forgot password?</p>
                 </div>
                 <br />
-                <button type='submit' className='bg-default p-2 cursor-pointer hover:bg-black/70 rounded-md text-center w-full bg-black/90 text-white'>Sign up</button>
+                <button type='submit' className='bg-default p-2 cursor-pointer font-bold hover:bg-black/70 rounded-md text-center w-full bg-black/90 text-white'>Sign up</button>
                 <br />
             </form>
             <div className="flex items-center justify-center space-x-1">
