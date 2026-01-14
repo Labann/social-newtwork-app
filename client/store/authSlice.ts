@@ -62,7 +62,7 @@ export const sign_up = createAsyncThunk<
 
         const data = await res.json()
         
-        if(res.status !== 200){
+        if(res.status !== 201){
             return thunkApi.rejectWithValue(data.error);
         }
 
@@ -91,6 +91,9 @@ export const logout = createAsyncThunk<
         })
 
         const data = await res.json()
+        if(res.status !== 200){
+            return thunkApi.rejectWithValue(data.error);
+        }
         await localStorage.removeItem("current_user")
         return data;
     } catch (error) {
