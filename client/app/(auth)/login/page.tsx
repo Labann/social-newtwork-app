@@ -1,21 +1,32 @@
 "use client"
-import React, { useState } from 'react'
+import React, { FormEvent, useState } from 'react'
 import { FaGoogle } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import Link from 'next/link';
 import {useFormik} from "formik"
 import * as yup from "yup"
+import { IUser } from '@/app/types';
+import { useAppDispatch } from '@/app/hooks/redux';
+import { login } from '@/store/authSlice';
 const LoginPage = () => {
+    const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false)
     const validationSchema = yup.object({
         email: yup.string().required().email(),
         password: yup.string().required().min(3).max(20)
     })
-    const formik = useFormik({
+    
+    interface IFormValues{
+        email: string
+        password: string
+    }
+    const formik = useFormik<IFormValues>({
         initialValues: {email: "", password: ""},
         validationSchema: validationSchema,
-        onSubmit: () => console.log("submitted")
+        onSubmit: async (values) => {
+            dispatch(login(values));
+        }
     })
   return (
 

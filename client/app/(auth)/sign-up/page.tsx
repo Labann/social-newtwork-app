@@ -6,8 +6,11 @@ import { FaEyeSlash } from "react-icons/fa";
 import Link from 'next/link';
 import {useFormik} from "formik"
 import * as yup from "yup"
+import { useAppDispatch } from '@/app/hooks/redux';
+import { sign_up } from '@/store/authSlice';
 
 const SignUpPage = () => {
+    const dispatch = useAppDispatch()
   const [isOpen, setIsOpen] = useState(false)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);  
   const validationSchema = yup.object({
@@ -23,7 +26,9 @@ const SignUpPage = () => {
     const formik = useFormik({
         initialValues: {first_name: "", last_name: "", username: "", email: "", password: "", confirm_password: ""},
         validationSchema: validationSchema,
-        onSubmit: () => console.log("submitted")
+        onSubmit: async (values) => {
+            dispatch(sign_up(values))
+        }
     })
   return (
 
