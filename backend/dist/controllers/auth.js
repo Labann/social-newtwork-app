@@ -27,7 +27,8 @@ export const login = async (req, res) => {
         res.cookie("token", token, {
             maxAge: 24 * 60 * 60 * 1000,
             httpOnly: true,
-            sameSite: "none"
+            sameSite: "none",
+            secure: process.env.NODE_ENV === "production"
         });
         const safeUser = { ...user, password: null };
         return res.status(200).json(safeUser);

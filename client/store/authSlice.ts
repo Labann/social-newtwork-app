@@ -111,7 +111,7 @@ const authSlice = createSlice({
                 state.isLoading = true
             })
             .addCase(login.fulfilled, (state, action) => {
-                state.isLoading = true
+                state.isLoading = false
                 state.isSuccess = true
                 state.current_user = action.payload
             })
@@ -124,7 +124,7 @@ const authSlice = createSlice({
                 state.isLoading = true
             })
             .addCase(sign_up.fulfilled, (state, action) => {
-                state.isLoading = true
+                state.isLoading = false
                 state.isSuccess = true
                 state.current_user = action.payload
             })
@@ -137,7 +137,7 @@ const authSlice = createSlice({
                 state.isLoading = true
             })
             .addCase(logout.fulfilled, (state) => {
-                state.isLoading = true
+                state.isLoading = false
                 state.isSuccess = true
                 state.current_user = null
             })
