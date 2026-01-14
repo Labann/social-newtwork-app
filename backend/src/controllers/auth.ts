@@ -39,7 +39,7 @@ export const login: express.RequestHandler = async (req, res) => {
 
         const safeUser = {...user, password: null}
 
-        return res.status(200).json({user: safeUser, token})
+        return res.status(200).json(safeUser)
     } catch (error) {
         console.error(error);
         return res.status(500).json({error: (error as Error).message})

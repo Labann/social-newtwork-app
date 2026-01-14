@@ -30,7 +30,7 @@ export const login = async (req, res) => {
             sameSite: "none"
         });
         const safeUser = { ...user, password: null };
-        return res.status(200).json({ user: safeUser, token });
+        return res.status(200).json(safeUser);
     }
     catch (error) {
         console.error(error);

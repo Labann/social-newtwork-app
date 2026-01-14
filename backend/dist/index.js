@@ -4,10 +4,14 @@ import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/user.js";
 import cookieParser from "cookie-parser";
 import postRoutes from "./routes/post.js";
+import cors from "cors";
 const app = express();
 app.use(express.json({ limit: "30mb" }));
 app.use(express.urlencoded({ extended: true, limit: "30mb" }));
 app.use(cookieParser());
+app.use(cors({
+    origin: ["https://twitter-clone-28c6.vercel.app"]
+}));
 //routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
