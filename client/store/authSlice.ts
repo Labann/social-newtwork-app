@@ -23,7 +23,7 @@ export const login = createAsyncThunk<
     {rejectValue: string}
 >("/auth/login", async (user, thunkApi) => {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
             method: "POST",
             headers: {
                 "Content-type": "application/json"
@@ -48,7 +48,7 @@ export const sign_up = createAsyncThunk<
     {rejectValue: string}
 >("/auth/sign_up", async (user, thunkApi) => {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/sign_up`, {
             method: "POST",
             headers: {
                 "Content-type": "application/json"
@@ -73,7 +73,7 @@ export const logout = createAsyncThunk<
     {rejectValue: string}
 >("/auth/logout", async (_, thunkApi) => {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
             method: "POST",
             headers: {
                 "Content-type": "application/json"

@@ -7,25 +7,14 @@ import Link from 'next/link';
 import {useFormik} from "formik"
 import * as yup from "yup"
 import { useAppDispatch, useAppSelector } from '@/app/hooks/redux';
-import { login, reset } from '@/store/authSlice';
+import { login } from '@/store/authSlice';
 import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
 
 const LoginPage = () => {
     
     const dispatch = useAppDispatch();
-    const {isSuccess, isError, message, isLoading} = useAppSelector(state => state.auth);
-    useEffect(() => {
-        if(isSuccess){
-            toast.success("login successfully")
-            return
-        }
-        if(isError){
-            toast.error(message)
-            return
-        }
-        
-    }, [isSuccess, isError, message, dispatch])
+    const {isLoading} = useAppSelector(state => state.auth)
     const [isOpen, setIsOpen] = useState(false)
     const validationSchema = yup.object({
         email: yup.string().required().email(),
@@ -41,6 +30,7 @@ const LoginPage = () => {
         validationSchema: validationSchema,
         onSubmit: async (values) => {
             try {
+
                 const action = await dispatch(login(values));
                 if(action.type === "/auth/login/fulfilled"){
                     toast.success("logged in successfully")
