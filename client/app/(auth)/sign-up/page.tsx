@@ -1,16 +1,35 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaGoogle } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import Link from 'next/link';
 import {useFormik} from "formik"
 import * as yup from "yup"
-import { useAppDispatch } from '@/app/hooks/redux';
-import { sign_up } from '@/store/authSlice';
+import { useAppDispatch, useAppSelector } from '@/app/hooks/redux';
+import { reset, sign_up } from '@/store/authSlice';
+import { toast } from 'sonner';
+import { Spinner } from '@/components/ui/spinner';
 
 const SignUpPage = () => {
+    
     const dispatch = useAppDispatch()
+     const {isSuccess, isError, message, isLoading} = useAppSelector(state => state.auth);
+        useEffect(() => {
+            if(isSuccess){
+                toast.success("login successfully")
+                return
+            }
+            if(isError){
+                toast.error(message)
+                return
+            }
+            return () => {
+                dispatch(reset())
+                return
+            }
+        }, [isSuccess, isError, message, dispatch])
+
   const [isOpen, setIsOpen] = useState(false)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);  
   const validationSchema = yup.object({
@@ -165,7 +184,7 @@ const SignUpPage = () => {
                     <p className='font-bold text-xs'>Forgot password?</p>
                 </div>
                 <br />
-                <button type='submit' className='bg-default p-2 cursor-pointer font-bold hover:bg-black/70 rounded-md text-center w-full bg-black/90 text-white'>Sign up</button>
+                <button type='submit' className='bg-default p-2 cursor-pointer font-bold hover:bg-black/70 rounded-md text-center w-full bg-black/90 text-white'>{isLoading? <Spinner/>: "Sign up"}</button>
                 <br />
             </form>
             <div className="flex items-center justify-center space-x-1">
