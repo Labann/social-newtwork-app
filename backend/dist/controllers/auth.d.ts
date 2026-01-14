@@ -1,4 +1,5 @@
 import * as express from "express";
+import "dotenv/config.js";
 export declare const login: express.RequestHandler;
 export declare const sign_up: express.RequestHandler;
 export declare const logout: express.RequestHandler;

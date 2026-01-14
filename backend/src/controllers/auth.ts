@@ -1,6 +1,7 @@
 import * as express from "express"
 import { prisma } from "../lib/prisma.js"
 import { generateToken } from "../utils/generateToken.js"
+import "dotenv/config.js"
 import bcrypt from "bcryptjs"
 
 
