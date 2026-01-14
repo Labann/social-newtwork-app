@@ -10,7 +10,7 @@ app.use(express.json({ limit: "30mb" }));
 app.use(express.urlencoded({ extended: true, limit: "30mb" }));
 app.use(cookieParser());
 app.use(cors({
-    origin: ["https://twitter-clone-28c6.vercel.app"]
+    origin: ["https://twitter-clone-28c6.vercel.app", "http://localhost:3000"]
 }));
 //routes
 app.use("/api/auth", authRoutes);

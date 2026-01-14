@@ -77,7 +77,7 @@ const SignUpPage = () => {
                         value={formik.values.first_name} 
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className='border-black/30 border-2 rounded-md p-2'
+                        className='border-black/30 border-2 w-full rounded-md p-2'
                         placeholder='Enter your first name'
                     />
                     {
@@ -93,7 +93,7 @@ const SignUpPage = () => {
                         value={formik.values.last_name} 
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className='border-black/30 border-2 rounded-md p-2'
+                        className='border-black/30 border-2 w-full rounded-md p-2'
                         placeholder='Enter your last name'
                     />
                     {
@@ -184,7 +184,7 @@ const SignUpPage = () => {
                     <p className='font-bold text-xs'>Forgot password?</p>
                 </div>
                 <br />
-                <button type='submit' className='bg-default p-2 cursor-pointer font-bold hover:bg-black/70 rounded-md text-center w-full bg-black/90 text-white'>{isLoading? <Spinner/>: "Sign up"}</button>
+                <button type='submit' className='bg-default p-2 cursor-pointer font-bold hover:bg-black/70 rounded-md text-center w-full bg-black/90 text-white flex justify-center items-center'>{isLoading? <Spinner/>: "Sign up"}</button>
                 <br />
             </form>
             <div className="flex items-center justify-center space-x-1">

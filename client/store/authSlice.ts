@@ -71,7 +71,7 @@ export const logout = createAsyncThunk<
     {message: string},
     void,
     {rejectValue: string}
->("/auth/logour", async (_, thunkApi) => {
+>("/auth/logout", async (_, thunkApi) => {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}`, {
             method: "POST",

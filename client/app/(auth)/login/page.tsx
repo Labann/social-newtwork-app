@@ -24,10 +24,7 @@ const LoginPage = () => {
             toast.error(message)
             return
         }
-        return () => {
-            dispatch(reset())
-            return
-        }
+        
     }, [isSuccess, isError, message, dispatch])
     const [isOpen, setIsOpen] = useState(false)
     const validationSchema = yup.object({
@@ -43,7 +40,16 @@ const LoginPage = () => {
         initialValues: {email: "", password: ""},
         validationSchema: validationSchema,
         onSubmit: async (values) => {
-            dispatch(login(values));
+            try {
+                const action = await dispatch(login(values));
+                if(action.type === "/auth/login/fulfilled"){
+                    toast.success("logged in successfully")
+                    return
+                }    
+            } catch (error) {
+                toast.error((error as Error).message)
+            }
+            
         }
     })
   return (
@@ -108,7 +114,7 @@ const LoginPage = () => {
                     <p className='font-bold text-xs'>Forgot password?</p>
                 </div>
                 <br />
-                <button type='submit' className='bg-default p-2 cursor-pointer hover:bg-black/70 rounded-md text-center w-full bg-black/90 text-white'>{isLoading? <Spinner/>: "Sign in"}</button>
+                <button type='submit' className='bg-default p-2 flex justify-center items-center cursor-pointer hover:bg-black/70 rounded-md text-center w-full bg-black/90 text-white'>{isLoading? <Spinner/>: "Sign in"}</button>
                 <br />
             </form>
             <div className="flex items-center justify-center space-x-1">
