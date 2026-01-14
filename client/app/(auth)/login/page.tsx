@@ -30,13 +30,14 @@ const LoginPage = () => {
         validationSchema: validationSchema,
         onSubmit: async (values) => {
             try {
-
+                console.log(values);
                 const action = await dispatch(login(values));
                 if(action.type === "/auth/login/fulfilled"){
                     toast.success("logged in successfully")
                     return
                 }    
             } catch (error) {
+                console.error(error)
                 toast.error((error as Error).message)
             }
             
