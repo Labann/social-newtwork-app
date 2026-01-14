@@ -33,6 +33,9 @@ export const login = createAsyncThunk<
         })
 
         const data = await res.json()
+        if(res.status !== 200){
+            return thunkApi.rejectWithValue(data.error);
+        }
         localStorage.setItem("currrent_user", JSON.stringify(data));
         return data;
     } catch (error) {
@@ -58,8 +61,14 @@ export const sign_up = createAsyncThunk<
         })
 
         const data = await res.json()
+        
+        if(res.status !== 200){
+            return thunkApi.rejectWithValue(data.error);
+        }
+
         localStorage.setItem("current_user", JSON.stringify("current_user"));
 
+        
         return data;
     } catch (error) {
         console.error(error);
