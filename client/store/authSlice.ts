@@ -26,7 +26,7 @@ export const login = createAsyncThunk<
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
             method: "POST",
             headers: {
-                "Content-type": "application/json"
+                "Content-Type": "application/json"
             },
             credentials: "include",
             body: JSON.stringify(user)
@@ -51,7 +51,7 @@ export const sign_up = createAsyncThunk<
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/sign_up`, {
             method: "POST",
             headers: {
-                "Content-type": "application/json"
+                "Content-Type": "application/json"
             },
             credentials: "include",
             body: JSON.stringify(user)
@@ -76,7 +76,7 @@ export const logout = createAsyncThunk<
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
             method: "POST",
             headers: {
-                "Content-type": "application/json"
+                "Content-Type": "application/json"
             },
             credentials: "include",
         })

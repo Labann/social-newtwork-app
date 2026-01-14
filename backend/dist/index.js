@@ -13,7 +13,9 @@ app.use(cors({
     origin: [
         "http://localhost:3000",
         "https://twitter-clone-28c6.vercel.app"
-    ]
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
 }));
 //routes
 app.use("/api/auth", authRoutes);
