@@ -10,9 +10,10 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks/redux';
 import { login } from '@/store/authSlice';
 import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
+import { useRouter } from 'next/navigation';
 
 const LoginPage = () => {
-    
+    const router = useRouter()
     const dispatch = useAppDispatch();
     const {isLoading} = useAppSelector(state => state.auth)
     const [isOpen, setIsOpen] = useState(false)
@@ -30,12 +31,23 @@ const LoginPage = () => {
         validationSchema: validationSchema,
         onSubmit: async (values) => {
             try {
-                console.log(values)
+                
                 const action = await dispatch(login(values));
-                if(action.type === "/auth/login/fulfilled"){
-                    toast.success("logged in successfully")
+                
+               
+                if(action.type === "/auth/login/rejected"){
+                    toast.error(action.payload?.toString(), {
+                        className: "text-red-400"
+                    })
                     return
                 }    
+
+                
+                toast.success("logged in successfully", {
+                    className: "text-green-400"
+                })
+                formik.resetForm()
+                router.push("/home")
             } catch (error) {
                 console.error(error)
                 toast.error((error as Error).message)
@@ -89,9 +101,9 @@ const LoginPage = () => {
                     />
                     {
                         !isOpen? (
-                        <FaEyeSlash onClick={() => setIsOpen(!isOpen)} className='absolute right-2 top-3'/>
+                        <FaEyeSlash onClick={() => setIsOpen(!isOpen)} className='cursor-pointer absolute right-2 top-3'/>
                     ): (
-                        <FaEye onClick={() => setIsOpen(!isOpen)} className='absolute right-2 top-3'/>
+                        <FaEye onClick={() => setIsOpen(!isOpen)} className='cursor-pointer absolute right-2 top-3'/>
                     )
                     }
                     {

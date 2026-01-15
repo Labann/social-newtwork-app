@@ -36,10 +36,10 @@ export const login = createAsyncThunk<
         if(res.status !== 200){
             return thunkApi.rejectWithValue(data.error);
         }
-        localStorage.setItem("currrent_user", JSON.stringify(data));
+        localStorage.setItem("current_user", JSON.stringify(data));
         return data;
     } catch (error) {
-        console.error(error);
+        
         return thunkApi.rejectWithValue((error as Error).message)
     }
 })

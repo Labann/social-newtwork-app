@@ -7,29 +7,16 @@ import Link from 'next/link';
 import {useFormik} from "formik"
 import * as yup from "yup"
 import { useAppDispatch, useAppSelector } from '@/app/hooks/redux';
-import { reset, sign_up } from '@/store/authSlice';
+import { sign_up } from '@/store/authSlice';
 import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
+import { useRouter } from 'next/navigation';
 
 const SignUpPage = () => {
-    
+    const {isLoading} = useAppSelector(state => state.auth)
     const dispatch = useAppDispatch()
-     const {isSuccess, isError, message, isLoading} = useAppSelector(state => state.auth);
-        useEffect(() => {
-            if(isSuccess){
-                toast.success("login successfully")
-                return
-            }
-            if(isError){
-                toast.error(message)
-                return
-            }
-            return () => {
-                dispatch(reset())
-                return
-            }
-        }, [isSuccess, isError, message, dispatch])
-
+    const router = useRouter()
+      
   const [isOpen, setIsOpen] = useState(false)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);  
   const validationSchema = yup.object({
@@ -46,7 +33,28 @@ const SignUpPage = () => {
         initialValues: {first_name: "", last_name: "", username: "", email: "", password: "", confirm_password: ""},
         validationSchema: validationSchema,
         onSubmit: async (values) => {
-            dispatch(sign_up(values))
+            try {
+                            
+                const action = await dispatch(sign_up(values));
+                
+                if(action.type === "/auth/sign_up/rejected"){
+                    toast.error(action.payload?.toString(), {
+                        className: "text-red-400"
+                    })
+                    return
+                }    
+
+                
+                toast.success("user created successfully", {
+                    className: "text-green-400"
+                })
+                formik.resetForm()
+                router.push("/login")
+                
+            } catch (error) {
+                console.error(error)
+                toast.error((error as Error).message)
+            }
         }
     })
   return (
@@ -69,7 +77,7 @@ const SignUpPage = () => {
             </div>
             <br />
             <form onSubmit={formik.handleSubmit} className='flex flex-col w-full space-y-3'>
-                <div className="grid lg:grid-cols-2">
+                <div className="grid lg:grid-cols-2 gap-3">
                     <div className="w-full">
                       <input 
                         type="text" 
