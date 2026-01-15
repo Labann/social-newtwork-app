@@ -121,7 +121,7 @@ export const login_v2 = createAsyncThunk<
         {rejectValue: string}
     >("/user/me", async (_, thunkApi) => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URI}/api/user/me`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/user/me`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
