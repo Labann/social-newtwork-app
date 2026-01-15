@@ -25,13 +25,9 @@ const Home = () => {
 
         if(token){
             fetchUser();
+            return;
         }
-
-        if(!current_user){
-            toast.error("You are required to login");
-            router.push("/login")
-        }
-    }, [current_user, router, pathname, dispatch])
+    }, [current_user, router, pathname, dispatch, token])
     return (
     <div>Home</div>
   )
