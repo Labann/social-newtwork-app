@@ -124,7 +124,7 @@ export const login_v2 = createAsyncThunk<
             const res = await fetch(`${process.env.API_URI}/api/user/me`, {
                 method: "GET",
                 headers: {
-                    "Content-type": "application/json"
+                    "Content-Type": "application/json"
                 },
                 credentials: "include"
             })
