@@ -3,6 +3,7 @@ import { prisma } from "../lib/prisma.js";
 import { generateToken } from "../utils/generateToken.js";
 import "dotenv/config.js";
 import bcrypt from "bcryptjs";
+import { check_user } from "../utils/check_user.js";
 export const login = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -69,6 +70,29 @@ export const sign_up = async (req, res) => {
         });
         const safeUser = { ...newUser, password: null };
         return res.status(201).json(safeUser);
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: error.message
+        });
+    }
+};
+export const redirectToHome = async (req, res) => {
+    try {
+        const user = req.user;
+        if (!user)
+            return res.send(`
+                <h1>User not found!</h1>
+                <a href={${process.env.CLIENT_URL}/login}>Back to Login</a>
+            `);
+        const token = await generateToken(user.id);
+        res.cookie("token", token, {
+            httpOnly: true,
+            sameSite: "none",
+            secure: process.env.NODE_ENV === "production"
+        });
+        res.redirect(`${process.env.CLIENT_URL}/home`);
     }
     catch (error) {
         console.error(error);

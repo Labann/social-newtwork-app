@@ -149,7 +149,8 @@ export const delete_account = async (req, res) => {
             return res.status(400).json({
                 error: "user id is required"
             });
-        const is_my_account = user_id === req.user.id;
+        const current_user = req.user;
+        const is_my_account = user_id === current_user.id;
         if (!is_my_account)
             return res.status(401).json({
                 error: "unauthorized -- can't delete account of another user"
@@ -183,7 +184,7 @@ export const update_proile = async (req, res) => {
             });
         const user = req.user;
         check_user(user.id);
-        if (user_id !== req.user.id)
+        if (user_id !== user.id)
             return res.status(401).json({
                 error: "can't update profile of other user"
             });
@@ -307,6 +308,21 @@ export const change_password = async (req, res) => {
             });
         const current_user = req.user;
         await check_user(current_user.id);
+        if (!current_user.password) {
+            //just create the password
+            const salt = await bcrypt.genSalt();
+            const passwordHashed = await bcrypt.hash(new_password, salt);
+            const new_user = await prisma.user.update({
+                where: {
+                    id: user_id,
+                },
+                data: {
+                    password: passwordHashed
+                }
+            });
+            const safe_user = { ...new_user, password: null };
+            return res.status(200).json({ user: safe_user, message: "password changed" });
+        }
         if (user_id !== current_user.id)
             return res.status(401).json({
                 error: "cannot change password of another user"

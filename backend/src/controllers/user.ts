@@ -8,7 +8,7 @@ import type { User } from "../generated/prisma/client.js";
 
 export const getMe: express.RequestHandler = async (req, res) => {
     try {
-        const user = req.user;
+        const user = req.user as User;
         await check_user(user.id)
         const safeUser = {...user, password: null}
 
@@ -62,7 +62,7 @@ export const follow_user: express.RequestHandler = async (req, res) => {
             error: "user id is required"
         })
 
-        const current_user = req.user;
+        const current_user = req.user as User;
 
         await check_user(current_user.id)
         const other_user = await prisma.user.findUnique({
@@ -112,7 +112,7 @@ export const unfollow_user: express.RequestHandler = async (req, res) => {
             error: 'user id is required'
         })
 
-        const current_user = req.user;
+        const current_user = req.user as User;
 
         await check_user(current_user.id)
         const other_user = await prisma.user.findUnique({
@@ -166,8 +166,8 @@ export const delete_account: express.RequestHandler = async (req, res) => {
         if(!user_id) return res.status(400).json({
             error: "user id is required"
         })
-        
-        const is_my_account = user_id === req.user.id
+        const current_user = req.user as User
+        const is_my_account = user_id === current_user.id
 
         if(!is_my_account) return res.status(401).json({
             error: "unauthorized -- can't delete account of another user"
@@ -207,11 +207,11 @@ export const update_proile: express.RequestHandler = async (req, res) => {
         })
 
         
-        const user = req.user 
+        const user = req.user as User
 
         check_user(user.id)
 
-        if(user_id !== req.user.id) return res.status(401).json({
+        if(user_id !== user.id) return res.status(401).json({
             error: "can't update profile of other user"
         })
 
@@ -348,14 +348,32 @@ export const change_password: express.RequestHandler = async (req, res) => {
             error: "user id is required"
         })
 
-        const current_user = req.user
+        const current_user = req.user as User;
         
         await check_user(current_user.id);
 
+        if(!current_user.password){
+            //just create the password
+            const salt = await bcrypt.genSalt();
+            const passwordHashed = await bcrypt.hash(new_password, salt)
+
+            const new_user = await prisma.user.update({
+                where: {
+                    id: user_id,
+                },
+                data: {
+                    password: passwordHashed
+                }
+            })
+
+            const safe_user = {...new_user, password: null}
+
+            return res.status(200).json({user:safe_user, message: "password changed"});    
+        }
         if(user_id !== current_user.id) return res.status(401).json({
             error: "cannot change password of another user"
         })
-
+        
         const isMatch = await bcrypt.compare(prev_password, current_user.password);
 
         if(!isMatch) return res.status(400).json({
