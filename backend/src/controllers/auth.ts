@@ -97,13 +97,15 @@ export const sign_up: express.RequestHandler = async (req, res) => {
 export const redirectToHome: express.RequestHandler = async (req, res) => {
     try { 
         const user = req.user as User
-        if(!user) return res.send(`
+        if(!user) return res.status(404).send(`
                 <h1>User not found!</h1>
-                <a href={${process.env.CLIENT_URL}/login}>Back to Login</a>
+                <a href={"${process.env.CLIENT_URL}/login"}>Back to Login</a>
             `)
+            
         const token = await generateToken(user.id)
 
         res.cookie("token", token, {
+            maxAge: 15 * 24 * 60 * 60 * 1000,
             httpOnly: true,
             sameSite: "none",
             secure: process.env.NODE_ENV === "production"

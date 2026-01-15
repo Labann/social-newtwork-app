@@ -131,7 +131,10 @@ export const login_v2 = createAsyncThunk<
 
             const data = await res.json();
 
-            if(res.status !== 200) return thunkApi.rejectWithValue(data.error);
+            if(res.status !== 200) {
+                return thunkApi.rejectWithValue(data.error);
+            }
+            
             localStorage.setItem("current_user", JSON.stringify(data))
             return data;
         } catch (error) {

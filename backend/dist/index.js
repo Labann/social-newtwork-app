@@ -34,29 +34,34 @@ passport.use(new GoogleStrategy({
     clientSecret: `${process.env.CLIENT_SECRET}`,
     callbackURL: `${process.env.SERVER_URL}/api/auth/v2/login/callback`
 }, async (accessToken, refreshToken, profile, done) => {
-    const email = profile.emails?.[0]?.value;
-    if (!email) {
-        return done(new Error("email not available"));
-    }
-    let user = await prisma.user.findUnique({
-        where: {
-            email: email
+    try {
+        const email = profile.emails?.[0]?.value;
+        if (!email) {
+            return done(new Error("email not available"));
         }
-    });
-    const name = splitName(profile.displayName);
-    if (!user) {
-        //sign-up
-        user = await prisma.user.create({
-            data: {
-                email: email,
-                first_name: name.first_name,
-                last_name: name.last_name,
-                username: profile.username || profile.displayName
+        let user = await prisma.user.findUnique({
+            where: {
+                email: email
             }
         });
+        const name = splitName(profile.displayName);
+        if (!user) {
+            //sign-up
+            user = await prisma.user.create({
+                data: {
+                    email: email,
+                    first_name: name.first_name,
+                    last_name: name.last_name,
+                    username: profile.username || profile.displayName
+                }
+            });
+        }
+        //login
+        done(null, user);
     }
-    //login
-    done(null, user);
+    catch (error) {
+        done(error);
+    }
 }));
 app.listen(port, () => console.log(`server running on port: ${port}`));
 app.get("/", (req, res) => res.send(`server runnning on port ${port}`));
