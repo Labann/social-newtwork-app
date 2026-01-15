@@ -2,11 +2,13 @@
 import React, { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '../hooks/redux'
 import { toast } from 'sonner';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { get_me } from '@/store/authSlice';
 
 const Home = () => {
     const pathname = usePathname();
+    const searchParams = useSearchParams()
+    const token = searchParams.get("token");
     const {current_user} = useAppSelector(state => state.auth);
     const router = useRouter();
     const dispatch = useAppDispatch();
@@ -21,7 +23,7 @@ const Home = () => {
             }
         }
 
-        if(pathname.includes("token")){
+        if(token){
             fetchUser();
         }
 
