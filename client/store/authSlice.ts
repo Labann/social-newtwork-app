@@ -121,7 +121,7 @@ export const login_v2 = createAsyncThunk<
         {rejectValue: string}
     >("/user/me", async (_, thunkApi) => {
         try {
-            const res = await fetch(`${process.env.API_URI}/api/user/me`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URI}/api/user/me`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
@@ -134,7 +134,7 @@ export const login_v2 = createAsyncThunk<
             if(res.status !== 200) {
                 return thunkApi.rejectWithValue(data.error);
             }
-            
+
             localStorage.setItem("current_user", JSON.stringify(data))
             return data;
         } catch (error) {
