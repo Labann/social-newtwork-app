@@ -7,7 +7,7 @@ import Link from 'next/link';
 import {useFormik} from "formik"
 import * as yup from "yup"
 import { useAppDispatch, useAppSelector } from '@/app/hooks/redux';
-import { sign_up } from '@/store/authSlice';
+import { login_v2, sign_up } from '@/store/authSlice';
 import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
 import { useRouter } from 'next/navigation';
@@ -65,7 +65,7 @@ const SignUpPage = () => {
                 <h1 className='text-default font-bold text-2xl'>Get started!</h1>
                 <h3 className='text-xs'>Create new account</h3>
             </div>
-            <button className='flex cursor-pointer border-2 border-black/30 rounded-md items-center space-x-2 w-full justify-center p-2'>
+            <button onClick={() => dispatch(login_v2())} className='flex cursor-pointer border-2 border-black/30 rounded-md items-center space-x-2 w-full justify-center p-2'>
                 <span><FaGoogle size={"1.5em"}/></span>
                 <span>Continue with Google</span>
             </button>

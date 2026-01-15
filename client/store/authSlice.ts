@@ -102,6 +102,18 @@ export const logout = createAsyncThunk<
     }
 })
 
+export const login_v2 = createAsyncThunk<
+    void,
+    void,
+    {rejectValue: string}
+    >("/auth/v2/login", async (_, thunkApi) => {
+        try {
+            window.location.href = `${process.env.NEXT_PUBLIC_API_URL!}/api/auth/v2/login`      
+        } catch (error) {
+            console.error(error);
+            return thunkApi.rejectWithValue((error as Error).message)
+        }
+    })
 const authSlice = createSlice({
     name: "auth",
     initialState: initialState,
