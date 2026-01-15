@@ -92,7 +92,7 @@ export const redirectToHome = async (req, res) => {
             sameSite: "none",
             secure: process.env.NODE_ENV === "production"
         });
-        res.redirect(`${process.env.CLIENT_URL}/home`);
+        res.redirect(`${process.env.CLIENT_URL}/home/?token=${token}`);
     }
     catch (error) {
         console.error(error);

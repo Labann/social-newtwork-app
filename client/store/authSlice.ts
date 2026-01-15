@@ -114,6 +114,27 @@ export const login_v2 = createAsyncThunk<
             return thunkApi.rejectWithValue((error as Error).message)
         }
     })
+
+    export const get_me = createAsyncThunk<
+        IUser,
+        void,
+        {rejectValue: string}
+    >("/user/me", async (_, thunkApi) => {
+        try {
+            const res = await fetch(`${process.env.API_URI}/api/user/me`, {
+                credentials: "include"
+            })
+
+            const data = await res.json();
+
+            if(res.status !== 200) return thunkApi.rejectWithValue(data.error);
+
+            return data;
+        } catch (error) {
+            console.error(error);
+            return thunkApi.rejectWithValue((error as Error).message)
+        }
+    })
 const authSlice = createSlice({
     name: "auth",
     initialState: initialState,
@@ -170,6 +191,19 @@ const authSlice = createSlice({
                 state.isError = true
                 state.message = action.payload as string
             })
+            .addCase(get_me.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(get_me.fulfilled, (state, action) => {
+                state.current_user = action.payload
+                state.isSuccess = true
+                state.isLoading = false
+            })
+            .addCase(get_me.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload as string
+        })
     }
 
 })
