@@ -8,7 +8,7 @@ import Link from 'next/link';
 const Navbar = () => {
   const [isModal, setIsModal] = useState(false);
     return (
-    <div className='flex items-center justify-between p-4 md:px-6'>
+    <div className='flex items-center shady-background justify-between p-4 md:px-6 border-b-3 border-black/10'>
         <Link href={"/home"} className="">
             <Image 
                 src={"/logo/logo.png"} 

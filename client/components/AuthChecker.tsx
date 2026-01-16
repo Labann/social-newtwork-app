@@ -1,0 +1,33 @@
+"use client"
+import React , {useEffect} from 'react'
+import { toast } from 'sonner';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { get_me } from '@/store/authSlice';
+import { useAppDispatch, useAppSelector } from '@/app/hooks/redux';
+const AuthChecker = () => {
+    const pathname = usePathname();
+    const searchParams = useSearchParams()
+    const token = searchParams.get("token");
+    const {current_user} = useAppSelector(state => state.auth);
+    const router = useRouter();
+    const dispatch = useAppDispatch();
+    
+    useEffect(()=> {
+        const fetchUser = async () => {
+            const action = dispatch(get_me())
+            if((await action).type === "/user/me/rejected"){
+                toast.error("Not authenticated yet!")
+                router.push("/login");
+                return
+            }
+        }
+
+        if(token || !current_user){
+            fetchUser();
+            return;
+        }
+    }, [current_user, router, pathname, dispatch, token])
+    return null
+}
+
+export default AuthChecker

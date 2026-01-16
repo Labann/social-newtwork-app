@@ -1,15 +1,26 @@
 import HomeLoader from '@/components/HomeLoader'
 import React, { Suspense } from 'react'
 import Navbar from '@/components/Navbar'
+import AuthChecker from '@/components/AuthChecker'
+import SideBar from '@/components/SideBar'
+import RightBar from '@/components/RightBar'
 
 const HomeLayout = ({children}: {
     children: React.ReactNode
 }) => {
   return (
-    <div className='shady-background min-h-screen'>
+    <div className='min-h-screen'>
        <Suspense fallback={<HomeLoader/>}>
+        <AuthChecker/>
         <Navbar/>
-        {children}
+        <div className='grid md:grid-cols-12 gap-4 p-4 max-w-7xl mx-auto'>
+            <SideBar/>
+            <div className='shady-background col-span-6 p-3'>
+              {children}
+            </div>
+            <RightBar/> 
+        </div>
+        
        </Suspense>
     </div>
    
