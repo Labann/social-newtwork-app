@@ -1,13 +1,18 @@
-import { Spinner } from '@/components/ui/spinner'
+import HomeLoader from '@/components/HomeLoader'
 import React, { Suspense } from 'react'
+import Navbar from '@/components/Navbar'
 
 const HomeLayout = ({children}: {
     children: React.ReactNode
 }) => {
   return (
-    <Suspense fallback={<Spinner />}>
+    <div className='shady-background min-h-screen'>
+       <Suspense fallback={<HomeLoader/>}>
+        <Navbar/>
         {children}
-    </Suspense>
+       </Suspense>
+    </div>
+   
   )
 }
 
