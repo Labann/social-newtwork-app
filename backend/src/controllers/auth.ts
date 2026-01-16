@@ -35,7 +35,7 @@ export const login: express.RequestHandler = async (req, res) => {
         const token = await generateToken(user.id)
 
         res.cookie("token", token, {
-            maxAge: 24 * 60 * 60 * 1000,
+            maxAge: 15 * 24 * 60 * 60 * 1000,
             httpOnly: true,
             sameSite: "none",
             secure: process.env.NODE_ENV === "production"

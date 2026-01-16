@@ -3,14 +3,7 @@ import express from "express";
 import { prisma } from "../lib/prisma.js";
 export const protect = async (req, res, next) => {
     try {
-        let token;
-        const authHeaders = req.headers.authorization;
-        if (authHeaders && authHeaders.includes("Bearer ")) {
-            token = authHeaders.split(" ")[1];
-        }
-        else if (req.cookies?.token) {
-            token = req.cookies.token;
-        }
+        const token = req.headers.authorization?.split(" ")[1] || req.cookies?.token;
         if (!token)
             return res.status(401).json({
                 error: "unauthorized no token"

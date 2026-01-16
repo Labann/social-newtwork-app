@@ -10,8 +10,8 @@ const HomeLayout = ({children}: {
 }) => {
   return (
     <div className='min-h-screen'>
-       <Suspense fallback={<HomeLoader/>}>
-        <AuthChecker/>
+       <Suspense fallback={<HomeLoader/>}>   
+        <AuthChecker/>     
         <Navbar/>
         <div className='grid md:grid-cols-12 gap-4 p-4 max-w-7xl mx-auto'>
             <SideBar/>

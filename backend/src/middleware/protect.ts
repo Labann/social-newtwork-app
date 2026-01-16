@@ -4,16 +4,7 @@ import type { My_jwt } from "../lib/jwt.types.js";
 import { prisma } from "../lib/prisma.js";
 export const protect: express.RequestHandler = async (req, res, next) => {
     try {
-        let token: undefined | string;
-
-        const authHeaders = req.headers.authorization
-
-        if(authHeaders && authHeaders.includes("Bearer ")){
-            token = authHeaders.split(" ")[1]
-        }else if(req.cookies?.token){
-            token = req.cookies.token
-        }
-
+        const token = req.headers.authorization?.split(" ")[1] || req.cookies?.token;
         if(!token) return res.status(401).json({
             error: "unauthorized no token"
         })

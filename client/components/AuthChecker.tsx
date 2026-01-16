@@ -14,8 +14,8 @@ const AuthChecker = () => {
     
     useEffect(()=> {
         const fetchUser = async () => {
-            const action = dispatch(get_me())
-            if((await action).type === "/user/me/rejected"){
+            const action = await dispatch(get_me())
+            if(action.type === "/user/me/rejected"){
                 toast.error("Not authenticated yet!")
                 router.push("/login");
                 return
