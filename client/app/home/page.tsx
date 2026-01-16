@@ -1,7 +1,11 @@
 import React from 'react'
+import CreatePost from '@/components/CreatePost'
 const Home = () => {
     return (
-    <div className="shady-background">main-content</div>
+    <div className="">
+        <CreatePost/>
+        
+    </div>
   )
 }
 

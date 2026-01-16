@@ -7,7 +7,7 @@ import { RxPerson } from "react-icons/rx";
 import { IoSettingsOutline } from "react-icons/io5";
 const SideBar = () => {
   return (
-    <div className='col-span-2 shady-background rounded-md border-2 border-black/30 shadow-md relative h-[70vh] hidden sm:block'>
+    <div className='col-span-2 shady-background rounded-md border-2 border-black/30 shadow-md relative h-[70vh] hidden md:block'>
         <h1 className='text-2xl md:text-3xl p-2 font-bold'>Menu</h1>
         <div className="flex flex-col justify-center text-xl space-y-2 px-1 pb-6">
             <Link href="/home/main-content" className="flex items-center space-x-2 hover:bg-black/30 w-full p-2 px-4 rounded-md">
