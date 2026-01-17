@@ -3,12 +3,12 @@ export interface IUser{
     email:  string
     first_name: string
     last_name: string
-    password: string
+    password: string | null
     username: string
     profilePicture: string
     bannerImg: string
     bio: string
-    comments: string
+    comments: [string]
     posts: IPost[]
     location: string
     post_likes: IPost_like[]
@@ -21,6 +21,7 @@ export interface IUser{
 
 export interface IPost{
   id : string
+  author: IUser
   user_id : string
   text : string
   images : string[]

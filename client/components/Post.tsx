@@ -5,6 +5,8 @@ import { FcLike } from "react-icons/fc";
 import { SlOptions } from "react-icons/sl";
 import { LuMessageSquareText } from "react-icons/lu";
 import { FaRetweet } from "react-icons/fa6";
+import { BsBookmark } from "react-icons/bs";
+
 const Post = () => {
   return (
     <div className='shady-background my-5 p-3 shadow-md rounded-md border-2 border-black/30 flex space-x-2'>
@@ -31,19 +33,20 @@ const Post = () => {
             <div className="flex items-center justify-between py-3">
                 <div className="flex items-center space-x-3">
                     <div className="flex items-center space-x-1">
-                        <FcLike size={"1.2em"}/>
+                        <FcLike size={"1.2em"} className='cursor-pointer'/>
                         <p className='text-xs'>223</p>
                     </div>
                     <div className="flex items-center space-x-1">
-                        <LuMessageSquareText size={"1.2em"}/>
+                        <LuMessageSquareText size={"1.2em"} className='cursor-pointer'/>
                         <p className='text-xs'>15</p>
                     </div>
                     <div className="flex items-center space-x-1">
-                        <FaRetweet size={"1.2em"}/>
+                        <FaRetweet size={"1.2em"} className='cursor-pointer'/>
                         <p className='text-xs'>20</p>
                     </div>
                      
                 </div>
+                <BsBookmark className='cursor-pointer'/>
             </div>
         </div>
     </div>

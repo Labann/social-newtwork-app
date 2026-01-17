@@ -13,7 +13,7 @@ const Navbar = () => {
             <Image 
                 src={"/logo/logo.png"} 
                 alt='logo-img' 
-                className='w-28 md:w-auto'
+                className='w-26 md:w-auto'
                 width={200}
                 height={100}
                 />
